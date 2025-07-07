@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemadesigner version="6.5">
+<source>
+<database charset="utf8mb4" collation="utf8mb4_general_ci">indrugs</database>
+</source>
+<canvas zoom="50">
+<tables>
+<table name="control" view="colnames">
+<left>247</left>
+<top>270</top>
+<width>111</width>
+<height>116</height>
+<sql_create_table>CREATE TABLE `control` (
+  `ID_CONTROL` bigint(20) NOT NULL AUTO_INCREMENT,
+  `FECHA_INICIO_TRATAMIENTO` datetime NOT NULL,
+  `FECHA_FIN_TRATAMIENTO` datetime NOT NULL,
+  `PROBLEMA_SALUD` varchar(100) NOT NULL,
+  `CANTIDAD_MEDIC` varchar(100) NOT NULL,
+  `FRECUENCIA_MEDIC` varchar(100) NOT NULL,
+  `ALARMA_CONTROL` time NOT NULL,
+  `ID_USUARIO` bigint(20) NOT NULL,
+  `ID_MEDICAMENTOS` bigint(20) NOT NULL,
+  PRIMARY KEY (`ID_CONTROL`),
+  KEY `ID_USUARIO` (`ID_USUARIO`),
+  KEY `ID_MEDICAMENTOS` (`ID_MEDICAMENTOS`),
+  CONSTRAINT `ID_MEDICAMENTOS` FOREIGN KEY (`ID_MEDICAMENTOS`) REFERENCES `medicamentos` (`ID_MEDICAMENTOS`),
+  CONSTRAINT `ID_USUARIO` FOREIGN KEY (`ID_USUARIO`) REFERENCES `usuarios` (`ID_USUARIOS`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci</sql_create_table>
+</table>
+<table name="domicilio" view="colnames">
+<left>437</left>
+<top>13</top>
+<width>109</width>
+<height>116</height>
+<sql_create_table>CREATE TABLE `domicilio` (
+  `ID_DOMICILIO` bigint(20) NOT NULL AUTO_INCREMENT,
+  `UBICACION_DOMICILIO` varchar(45) NOT NULL,
+  `ESTADO_DOMICILIO` varchar(255) NOT NULL,
+  `FECHA_ENTREGA_DOMICILIO` datetime NOT NULL,
+  `ID_VEHICULO` bigint(20) NOT NULL,
+  `ID_ORDENES` bigint(20) NOT NULL,
+  `FORMULA_MEDICA` varchar(255) NOT NULL,
+  `EPS_DOMICILIO` varchar(50) NOT NULL,
+  `TELEFONO_DOMICILIO` varchar(20) NOT NULL,
+  PRIMARY KEY (`ID_DOMICILIO`),
+  KEY `ORDENES_ID_ORDENES` (`ID_ORDENES`),
+  KEY `VEHÍCULO_ID_VEHÍCULO` (`ID_VEHICULO`),
+  CONSTRAINT `domicilio_ibfk_1` FOREIGN KEY (`ID_ORDENES`) REFERENCES `ordenes` (`ID_ORDENES`),
+  CONSTRAINT `domicilio_ibfk_2` FOREIGN KEY (`ID_VEHICULO`) REFERENCES `vehiculo` (`ID_VEHICULO`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci</sql_create_table>
+</table>
+<table name="inventario" view="colnames">
+<left>552</left>
+<top>381</top>
+<width>117</width>
+<height>99</height>
+<sql_create_table>CREATE TABLE `inventario` (
+  `ID_INVENTARIO` bigint(20) NOT NULL AUTO_INCREMENT,
+  `FECHA_ENTRADA_INVENTARIO` datetime NOT NULL,
+  `FECHA_SALIDA_INVENTARIO` datetime NOT NULL,
+  `ID_MEDICAMENTOS` bigint(20) NOT NULL,
+  `STOCK_INVENTARIO` int(100) NOT NULL,
+  `VENCIMIENTOMED_INVENTARIO` date NOT NULL,
+  `ESTADOMED_INVENTARIO` varchar(255) NOT NULL DEFAULT 'ACTIVO',
+  PRIMARY KEY (`ID_INVENTARIO`),
+  KEY `MEDICAMENTOS_ID_MEDICAMENTOS` (`ID_MEDICAMENTOS`),
+  CONSTRAINT `inventario_ibfk_1` FOREIGN KEY (`ID_MEDICAMENTOS`) REFERENCES `medicamentos` (`ID_MEDICAMENTOS`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci</sql_create_table>
+</table>
+<table name="medicamentos" view="colnames">
+<left>414</left>
+<top>303</top>
+<width>116</width>
+<height>73</height>
+<sql_create_table>CREATE TABLE `medicamentos` (
+  `ID_MEDICAMENTOS` bigint(20) NOT NULL AUTO_INCREMENT,
+  `NOMBRE_MEDICAMENTOS` varchar(45) NOT NULL,
+  `DESCRIPCION_MEDICAMENTOS` varchar(45) NOT NULL,
+  `IMAGEN_MEDICAMENTO` varchar(255) NOT NULL,
+  PRIMARY KEY (`ID_MEDICAMENTOS`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci</sql_create_table>
+</table>
+<table name="ordenes" view="colnames">
+<left>316</left>
+<top>151</top>
+<width>91</width>
+<height>107</height>
+<sql_create_table>CREATE TABLE `ordenes` (
+  `ID_ORDENES` bigint(20) NOT NULL AUTO_INCREMENT,
+  `FECHA_ENTREGA` datetime NOT NULL,
+  `EPS_ORDEN` varchar(75) NOT NULL,
+  `ESTADO_ORDEN` varchar(255) NOT NULL DEFAULT 'ACTIVO',
+  `USUARIOS_PACIENTE` bigint(20) NOT NULL,
+  `CANTIDADMED_ORDEN` int(11) NOT NULL,
+  `DIRECCION_ORDEN` varchar(100) NOT NULL,
+  `TELEFONO_ORDEN` int(11) NOT NULL,
+  PRIMARY KEY (`ID_ORDENES`),
+  KEY `USUARIOS_ID_USUARIOS_PACIENTE` (`USUARIOS_PACIENTE`),
+  CONSTRAINT `ordenes_ibfk_1` FOREIGN KEY (`USUARIOS_PACIENTE`) REFERENCES `usuarios` (`ID_USUARIOS`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci</sql_create_table>
+</table>
+<table name="ordenes_has_medicamentos" view="colnames">
+<left>538</left>
+<top>183</top>
+<width>117</width>
+<height>73</height>
+<sql_create_table>CREATE TABLE `ordenes_has_medicamentos` (
+  `ID_MEDICAMENTO_POR_ORDEN` bigint(20) NOT NULL AUTO_INCREMENT,
+  `ID_ORDENES` bigint(20) NOT NULL,
+  `ID_MEDICAMENTOS` bigint(20) NOT NULL,
+  PRIMARY KEY (`ID_MEDICAMENTO_POR_ORDEN`),
+  KEY `ORDENES_ID_ORDENES` (`ID_ORDENES`),
+  KEY `MEDICAMENTOS_ID_MEDICAMENTOS` (`ID_MEDICAMENTOS`),
+  CONSTRAINT `ordenes_has_medicamentos_ibfk_1` FOREIGN KEY (`ID_ORDENES`) REFERENCES `ordenes` (`ID_ORDENES`),
+  CONSTRAINT `ordenes_has_medicamentos_ibfk_2` FOREIGN KEY (`ID_MEDICAMENTOS`) REFERENCES `medicamentos` (`ID_MEDICAMENTOS`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci</sql_create_table>
+</table>
+<table name="pqrs" view="colnames">
+<left>149</left>
+<top>16</top>
+<width>74</width>
+<height>82</height>
+<sql_create_table>CREATE TABLE `pqrs` (
+  `ID_PQRS` bigint(20) NOT NULL AUTO_INCREMENT,
+  `TIPO_SOLICITUD` varchar(255) NOT NULL,
+  `MOTIVO_PQRS` text NOT NULL,
+  `ID_USUARIOS` bigint(20) NOT NULL,
+  `FECHA_PQRS` datetime NOT NULL,
+  PRIMARY KEY (`ID_PQRS`),
+  KEY `ID_USUARIOS` (`ID_USUARIOS`),
+  CONSTRAINT `ID_USUARIOS` FOREIGN KEY (`ID_USUARIOS`) REFERENCES `usuarios` (`ID_USUARIOS`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci</sql_create_table>
+</table>
+<table name="privilegios" view="colnames">
+<left>388</left>
+<top>429</top>
+<width>107</width>
+<height>56</height>
+<sql_create_table>CREATE TABLE `privilegios` (
+  `ID_PRIVILEGIOS` bigint(20) NOT NULL AUTO_INCREMENT,
+  `DESCRIPCION_PRIVILEGIOS` enum('SELECT','INSERT','UPDATE','DELETE') NOT NULL,
+  PRIMARY KEY (`ID_PRIVILEGIOS`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci</sql_create_table>
+</table>
+<table name="roles" view="colnames">
+<left>113</left>
+<top>336</top>
+<width>63</width>
+<height>56</height>
+<sql_create_table>CREATE TABLE `roles` (
+  `ID_ROLES` bigint(20) NOT NULL AUTO_INCREMENT,
+  `NOMBRE_ROL` varchar(45) NOT NULL,
+  PRIMARY KEY (`ID_ROLES`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci</sql_create_table>
+</table>
+<table name="usuarios" view="colnames">
+<left>12</left>
+<top>122</top>
+<width>98</width>
+<height>124</height>
+<sql_create_table>CREATE TABLE `usuarios` (
+  `ID_USUARIOS` bigint(20) NOT NULL AUTO_INCREMENT,
+  `NOMBRE_USUARIOS` varchar(255) NOT NULL,
+  `TIPODOC_USUARIOS` varchar(255) NOT NULL,
+  `NUMDOC_USUARIOS` varchar(255) NOT NULL,
+  `DIRECCION_USUARIOS` varchar(255) NOT NULL,
+  `ESTADO_USUARIO` varchar(255) DEFAULT 'ACTIVO',
+  `TELEFONO_USUARIOS` varchar(255) NOT NULL,
+  `CORREO_USUARIOS` varchar(255) NOT NULL,
+  `CONTRASEÑA_USUARIOS` varchar(300) NOT NULL,
+  `ID_ROLES_USUARIOS` bigint(20) NOT NULL,
+  PRIMARY KEY (`ID_USUARIOS`),
+  KEY `ROLES_ID_ROLES` (`ID_ROLES_USUARIOS`),
+  CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`ID_ROLES_USUARIOS`) REFERENCES `roles` (`ID_ROLES`)
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci</sql_create_table>
+</table>
+<table name="usuarios_has_privilegios" view="colnames">
+<left>230</left>
+<top>419</top>
+<width>99</width>
+<height>65</height>
+<sql_create_table>CREATE TABLE `usuarios_has_privilegios` (
+  `ID_PRIVILEGIO_USUARIO` bigint(20) NOT NULL AUTO_INCREMENT,
+  `ID_USUARIOS` bigint(20) NOT NULL,
+  `ID_PRIVILEGIOS` bigint(20) NOT NULL,
+  PRIMARY KEY (`ID_PRIVILEGIO_USUARIO`),
+  KEY `USUARIOS_ID_USUARIOS` (`ID_USUARIOS`),
+  KEY `PRIVILEGIOS_ID_PRIVILEGIOS` (`ID_PRIVILEGIOS`),
+  CONSTRAINT `usuarios_has_privilegios_ibfk_1` FOREIGN KEY (`ID_USUARIOS`) REFERENCES `usuarios` (`ID_USUARIOS`),
+  CONSTRAINT `usuarios_has_privilegios_ibfk_2` FOREIGN KEY (`ID_PRIVILEGIOS`) REFERENCES `privilegios` (`ID_PRIVILEGIOS`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci</sql_create_table>
+</table>
+<table name="vehiculo" view="colnames">
+<left>272</left>
+<top>19</top>
+<width>98</width>
+<height>97</height>
+<sql_create_table>CREATE TABLE `vehiculo` (
+  `ID_VEHICULO` bigint(20) NOT NULL AUTO_INCREMENT,
+  `COLOR_VEHICULO` varchar(45) NOT NULL,
+  `MARCA_VEHICULO` varchar(50) NOT NULL,
+  `PLACA_VEHICULO` varchar(45) NOT NULL,
+  `TIPO_VEHICULO` varchar(255) NOT NULL,
+  `ESTADO_VEHICULO` varchar(255) NOT NULL DEFAULT 'ACTIVO',
+  `PROPIETARIO_USUARIOS` bigint(20) NOT NULL,
+  PRIMARY KEY (`ID_VEHICULO`),
+  KEY `USUARIOS_ID_USUARIOS` (`PROPIETARIO_USUARIOS`),
+  CONSTRAINT `vehiculo_ibfk_1` FOREIGN KEY (`PROPIETARIO_USUARIOS`) REFERENCES `usuarios` (`ID_USUARIOS`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci</sql_create_table>
+</table>
+</tables>
+</canvas>
+</schemadesigner>
